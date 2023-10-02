@@ -1,0 +1,38 @@
+Таблица 1
+Teachers (ID, Name, Age)
+
+Таблица 2
+Students (ID, Name, TeacherID)
+
+Таблица 3
+Lessons (ID, Name)
+
+Таблица 4
+Exams (StudentID, LessonID, Date, Score)
+
+1.  Сколько учеников у каждого учителя. Сортировать по количеству учеников 
+от меньшего
+SQL запрос:
+
+SELECT Teachers.ID, Teachers.Name, COUNT(Students.ID) AS StudentCount
+FROM Teachers
+JOIN Students ON Teachers.ID = Students.TeacherID
+GROUP BY Teachers.ID, Teachers.Name
+ORDER BY StudentCount ASC;
+
+
+2.  Найти ученика, у которого максимальный бал по Математике с 01.01.2021 
+по 01.01.2022, не брать учителей, у которых возраст старше 40.
+SQL запрос:
+
+
+SELECT Students.ID, Students.Name, MAX(Exams.Score) AS MaxScore
+FROM Students
+JOIN Teachers ON Students.TeacherID = Teachers.ID
+JOIN Exams ON Students.ID = Exams.StudentID
+WHERE Exams.LessonID = (SELECT ID FROM Lessons WHERE Name = 'Math')
+  AND Exams.Date >= '2021-01-01' AND Exams.Date <= '2022-01-01'
+  AND Teachers.Age <= 40
+GROUP BY Students.ID, Students.Name
+ORDER BY MaxScore DESC
+LIMIT 1;
